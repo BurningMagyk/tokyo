@@ -1,0 +1,31 @@
+body {
+    background-color: black;
+}
+
+h1 {
+    color: gray;
+}
+
+h3 {
+    color: red;
+}
+
+.name_area {
+    float: left;
+    position: fixed;
+}
+
+.button_area {
+    right: 1%;
+    top: 2%;
+    position: fixed;
+}
+
+a.button {
+    padding: 3px 8px;
+    border: 1px outset buttonborder;
+    border-radius: 3px;
+    color: buttontext;
+    background-color: buttonface;
+    text-decoration: none;
+}
