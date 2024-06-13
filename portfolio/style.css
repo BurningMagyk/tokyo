@@ -6,19 +6,20 @@ h1 {
     color: gray;
 }
 
+h2 {
+    color: white;
+}
+
 h3 {
     color: red;
 }
 
-.name_area {
-    float: left;
-    position: fixed;
+header {
+    left: clear;
 }
 
-.button_area {
-    right: 1%;
-    top: 2%;
-    position: fixed;
+.title_area {
+    float: left;
 }
 
 a.button {
@@ -28,4 +29,9 @@ a.button {
     color: buttontext;
     background-color: buttonface;
     text-decoration: none;
+    float: right;
+}
+
+main {
+    clear: both;
 }
