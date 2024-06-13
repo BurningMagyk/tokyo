@@ -22,6 +22,14 @@ header {
     float: left;
 }
 
+.header_img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+    width: 25%;
+}
+
 a.button {
     padding: 3px 8px;
     border: 1px outset buttonborder;
