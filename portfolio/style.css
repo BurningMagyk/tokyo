@@ -1,5 +1,10 @@
+canvas {
+    display: block;
+}
+
 body {
     background-color: black;
+    margin: 0px;
 }
 
 h1 {
@@ -19,7 +24,8 @@ header {
 }
 
 .title_area {
-    float: left;
+    position: fixed;
+    left: 0;
 }
 
 .header_img {
@@ -37,7 +43,12 @@ a.button {
     color: buttontext;
     background-color: buttonface;
     text-decoration: none;
-    float: right;
+    position: fixed;
+}
+
+#download_resume_button {
+    position: fixed;
+    right: 0;
 }
 
 main {
