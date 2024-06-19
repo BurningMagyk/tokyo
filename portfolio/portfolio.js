@@ -1,8 +1,7 @@
 "use strict";
 
 /**
- * Written by Travis from StackOverflow.
- * @returns Width of the page.
+ * getPatgeWidth and getPageHeight written by Travis from StackOverflow.
  */
 function getPageWidth() {
     return Math.max(
@@ -21,20 +20,77 @@ function getPageHeight() {
         document.documentElement.clientHeight);
 }
 
-window.onload = function() {
-    let canvas = document.getElementById("header_img_canvas");
-    canvas.width = getPageWidth();
+const headerCanvas = document.getElementById("header_canvas"),
+      headerCtx = headerCanvas.getContext("2d");
+const titleArea = document.getElementsByClassName("title_area")[0],
+      downloadResumeButton = document.getElementById("download_resume_button");
+const headerImageGoat = document.getElementById("header_img_goat"),
+      headerImageRobin = document.getElementById("header_img_robin");
 
-    let context = canvas.getContext("2d");
+function drawImage(ctx, image, { x: xPos, y: yPos }, { width: rightBound, height: lowerBound }, { xFlip, yFlip }) {
+    if (rightBound === 0 && lowerBound === 0) {
+        console.error("Invalid arguments: rightBound or lowerBound must be non-zero.");
+        return null;
+    }
+    let originalWidth = image.width,
+        originalHeight = image.height;
+    if (rightBound === 0) {
+        let scaledWidth = image.width / image.height * lowerBound,
+            scaledHeight = lowerBound,
+            scaledX = xPos,
+            scaledY = yPos;
+        if (xFlip) {
+            scaledX += scaledWidth;
+            originalWidth *= -1;
+        }
+        if (yFlip) {
+            scaledY += scaledHeight;
+            originalHeight *= -1;
+        }
+        ctx.drawImage(image, 0, 0, originalWidth, originalHeight, scaledX, scaledY, scaledWidth, scaledHeight);
+    } else {
+        let scaledHeight = image.height / image.width * rightBound,
+            scaledWidth = rightBound,
+            scaledX = xPos,
+            scaledY = yPos;
+        if (xFlip) {
+            scaledX += scaledWidth;
+            originalWidth *= -1;
+        }
+        if (yFlip) {
+            scaledY += scaledHeight;
+            originalHeight *= -1;
+        }
+        ctx.drawImage(image, 0, 0, originalWidth, originalHeight, scaledX, scaledY, scaledWidth, scaledHeight);
+    }
+}
+
+function drawHeader() {
+    let titleAreaRect = titleArea.getBoundingClientRect();
 
     // Get lower bounds of content in the header.
-    let title_area = document.getElementsByClassName("title_area")[0],
-        download_resume_button = document.getElementById("download_resume_button");
-    let lowerBounds = Math.max(
-        title_area.getBoundingClientRect().bottom,
-        download_resume_button.getBoundingClientRect().bottom);
-    canvas.height = lowerBounds;
+    let lowerBound = Math.max(
+        titleAreaRect.bottom,
+        downloadResumeButton.getBoundingClientRect().bottom);
+    headerCanvas.width = getPageWidth();
+    headerCanvas.height = lowerBound;
 
-    context.fillStyle = "green";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    headerCtx.fillStyle = "green";
+    headerCtx.fillRect(0, 0, headerCanvas.width, headerCanvas.height);
+    
+    let imageGoatScaledWidth = headerImageGoat.width / headerImageGoat.height * lowerBound;
+    let imageGoatArea = titleAreaRect.right - imageGoatScaledWidth;
+    // while (imageGoatArea > 0) {
+    //     imageGoatArea -= imageGoatScaledWidth;
+    //     drawImage(headerCtx, headerImageGoat, {x: 0, y: 0}, {width: 0, height: lowerBound});
+    // }
+    drawImage(headerCtx, headerImageGoat, {x: 0, y: 0}, {width: 0, height: lowerBound}, {xFlip: false, yFlip: true});
+}
+
+window.onload = function() {
+    drawHeader();
+}
+
+window.onresize = function() {
+    drawHeader();
 }
