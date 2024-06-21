@@ -1,10 +1,18 @@
-canvas {
-    display: block;
+main {
+    clear: both;
 }
 
 body {
     background-color: black;
     margin: 0px;
+}
+
+img {
+    display: none;
+}
+
+canvas {
+    display: block;
 }
 
 h1 {
@@ -19,17 +27,23 @@ h3 {
     color: red;
 }
 
-header {
-    left: clear;
+h5 {
+    color: purple;
 }
 
 .title_area {
     position: fixed;
+    top: 0px;
     left: 0;
+    padding-right: 30px;
 }
 
-img {
-    display: none;
+.footer_area {
+    position: absolute;
+    line-height: 50%;
+    text-align: center;
+    left: 0;
+    right: 0;
 }
 
 a.button {
@@ -47,6 +61,11 @@ a.button {
     right: 0;
 }
 
-main {
-    clear: both;
+#header_canvas {
+    position: fixed;
+    top: 0px;
+}
+
+#footer_canvas {
+    position: absolute;
 }

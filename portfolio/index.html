@@ -23,6 +23,23 @@
     <img src="Resources/fence_robin.png" alt="look into my eye" id="header_img_fence"></img>
     <img src="Resources/fence_robin_flipped.png" alt="look into my eye" id="header_img_fence_flipped"></img>
 
+    <img src="Resources/project_cloudcast_card.png" id="card_img_cloudcast"></img>
+    <img src="Resources/project_cloudcast_shot.png" id="shot_img_cloudcast_1"></img>
+    <img src="Resources/project_bokkusu_card.png" id="card_img_bokkusu"></img>
+    <img src="Resources/project_bokkusu_shot_1.png" id="shot_img_bokkusu_1"></img>
+    <img src="Resources/project_bokkusu_shot_2.png" id="shot_img_bokkusu_2"></img>
+    <img src="Resources/project_bokkusu_shot_3.png" id="shot_img_bokkusu_3"></img>
+    <img src="Resources/project_wizzers_card.png" id="card_img_wizzers"></img>
+    <img src="Resources/project_wizzers_shot.png" id="shot_img_wizzers_1"></img>
+    <img src="Resources/project_rainfall_card.png" id="card_img_rainfall"></img>
+    <img src="Resources/project_droserogis_card.png" id="card_img_droserogis"></img>
+    <img src="Resources/project_droserogis_shot_1.png" id="shot_img_droserogis_1"></img>
+    <img src="Resources/project_droserogis_shot_2.png" id="shot_img_droserogis_2"></img>
+    <img src="Resources/project_dauntless_card.png" id="card_img_dauntless"></img>
+    <img src="Resources/project_dauntless_shot_1.png" id="shot_img_dauntless_1"></img>
+    <img src="Resources/project_dauntless_shot_2.png" id="shot_img_dauntless_2"></img>
+    <img src="Resources/project_dauntless_shot_3.png" id="shot_img_dauntless_3"></img>
+
 
     <!-- "Cross" favicon from dpw4050 on favicon.cc -->
     <link rel="icon" href="Resources/cross.ico" type="image/x-icon"/>
@@ -35,31 +52,36 @@
 <body>
 
     <header>
-        <hgroup>
-            <div class="title_area">
-                <h1>Robin Campos</h1>
-                <h3>some projects that Robin has developed</h3>
-            </div>
-        
-            <a href="Resources/Robin_Campos_Resume.pdf" download="Robin_Campos_Resume.pdf" class="button" id="download_resume_button">Download Resume</a>
-            <!-- Also include email address as "Contact Robin at robin@burningmagyk.tokyo" -->
-        </hgroup>
-
         <canvas id="header_canvas"></canvas>
+        <div class="title_area">
+            <h1>Robin Campos</h1>
+            <h3>some projects that Robin has developed</h3>
+        </div>
+        <a href="Resources/Robin_Campos_Resume.pdf" download="Robin_Campos_Resume.pdf" class="button" id="download_resume_button">Download Resume</a>
+        <div id="header_spacer"></div>
     </header>
 
     <main>
 
         <h2>CloudCast visualization<h2>
         <p></p>
-        <h2>Magick and Wizzers</h2>
         <h2>Bokkusu</h2>
-        <h2>Droserogis</h2>
+        <h2>Magick and Wizzers</h2>
         <h2>Rainfall Cellular Automata</h2>
         <h2>Portal Pong</h2>
+        <h2>Droserogis</h2>        
         <h2>Dauntless</h2>
         
     </main>
+
+    <footer>
+        <canvas id="footer_canvas"></canvas>
+        <div class="footer_area">
+            <h5 id="contact_info">Contact Robin by email: robin@burningmagyk.tokyo</h6>
+            <h5 id="github_repo">Robin's GitHub profile: https://github.com/BurningMagyk</h6>
+            <h5 id="itch_io">Robin's itch.io page: https://burning-magyk.itch.io/</h6>
+        </div>
+    </footer>
 
 </body>
 
