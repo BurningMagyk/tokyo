@@ -60,7 +60,7 @@ function drawHeader() {
 
     // Get lower bounds of content in the header.
     let lowerBound = Math.max(titleAreaRect.bottom, buttonRect.bottom);
-    headerCanvas.width = getPageWidth();
+    headerCanvas.width = document.documentElement.clientWidth;
     headerCanvas.height = lowerBound;
     
     // Draw header images according to how much space there is.
@@ -132,28 +132,34 @@ const cardResolutionRatio = 0.5625;
 const demoCanvas = document.getElementById("demo_canvas"),
       demoCtx = demoCanvas.getContext("2d");
 
-function drawCards(upperBound, lowerBound) {
-    demoCanvas.width = getPageWidth();
-    demoCanvas.height = lowerBound - upperBound;
-
-    demoCtx.fillStyle = "green";
-    demoCtx.fillRect(0, 0, demoCanvas.width, demoCanvas.height);
+function drawCards() {
+    demoCanvas.width = document.documentElement.clientWidth;
     
     // Determine how many cards should be in a given row.
-    let cardCountPerRow = 0;
+    let cardCountPerRow = demoProjects.length + 1;
     do {
-        cardCountPerRow++;
+        cardCountPerRow--;
         var cardWidth = demoCanvas.width / cardCountPerRow;
         var cardHeight = cardWidth * cardResolutionRatio;
     } 
-    while (cardHeight / 2 > demoCanvas.height && cardCountPerRow < demoProjects.length);
+    while (cardHeight * 3 < document.documentElement.clientHeight && cardCountPerRow > 1);
+
+    // Detrmine how many rows are needed.
+    let rowCount = Math.ceil(demoProjects.length / cardCountPerRow);
+
+    // Determine canvas height after calculating card height and row count.
+    demoCanvas.height = cardHeight * rowCount;
+
+    // demoCtx.fillStyle = "black";
+    // demoCtx.fillRect(0, 0, demoCanvas.width, demoCanvas.height);
 
     let cardCountToDraw = demoProjects.length,
+        rowCountDrawn = 0,
         cardDrawPosition = {x: 0, y: 0};
     while (cardCountToDraw > 0) {
-        for (let i = 0; i < cardCountPerRow && i < cardCountToDraw; i++) {
+        for (let i = 0; i < cardCountPerRow && cardCountToDraw > 0; i++) {
             drawImage(demoCtx,
-                demoProjects[i].cardImage,
+                demoProjects[i + rowCountDrawn * cardCountPerRow].cardImage,
                 cardDrawPosition,
                 {width: cardWidth, height: cardHeight}
             );
@@ -161,6 +167,8 @@ function drawCards(upperBound, lowerBound) {
             cardCountToDraw--;
         }
         cardDrawPosition.y += cardHeight;
+        cardDrawPosition.x = 0;
+        rowCountDrawn++;
     }
 }
 
@@ -172,7 +180,7 @@ function drawFooter() {
     let textAreaRect = footerArea.getBoundingClientRect(),
         upperBound = textAreaRect.top;
     
-    footerCanvas.width = getPageWidth();
+    footerCanvas.width = document.documentElement.clientWidth;
     footerCanvas.height = textAreaRect.height;
 
     footerCtx.fillStyle = "gray";
@@ -184,9 +192,6 @@ function drawFooter() {
 var headerLowerBound, footerUpperBound;
 
 window.onload = function() {
-    headerLowerBound = drawHeader();
-    footerUpperBound = drawFooter();
-
     // Load project stuff.
     demoProjects.push(
         new DemoProject("cloudcast", 1),
@@ -197,11 +202,16 @@ window.onload = function() {
         new DemoProject("dauntless", 3),
     );
 
-    drawCards(headerLowerBound, footerUpperBound);
+    // A scroll bug shows up if drawCards isn't called first.
+    drawCards();
+
+    headerLowerBound = drawHeader();
+    footerUpperBound = drawFooter();
+    drawCards();
 }
 
 window.onresize = function() {
     headerLowerBound = drawHeader();
     footerUpperBound = drawFooter();
-    drawCards(headerLowerBound, footerUpperBound);
+    drawCards();
 }
