@@ -22,22 +22,23 @@ function getPageHeight() {
     );
 }
 
-function drawImage(ctx, image, { x: xPos, y: yPos }, { width: rightBound, height: lowerBound }) {
-    if (rightBound === 0 && lowerBound === 0) {
-        console.error("Invalid arguments: rightBound or lowerBound must be non-zero.");
+function drawImage(ctx, image, { x: xPos, y: yPos }, { width: fixedWidth, height: fixedHeight }) {
+    if (fixedWidth !== 0 && fixedHeight !== 0) {
+        ctx.drawImage(image, 0, 0, image.width, image.height, xPos, yPos, fixedWidth, fixedHeight);
         return null;
     }
-    if (rightBound === 0) {
-        let scaledWidth = image.width / image.height * lowerBound,
-            scaledHeight = lowerBound;
-        ctx.drawImage(image, 0, 0, image.width, image.height, xPos, yPos, scaledWidth, scaledHeight);
-        return scaledWidth;
-    } else {
-        let scaledHeight = image.height / image.width * rightBound,
-            scaledWidth = rightBound;
-        ctx.drawImage(image, 0, 0, image.width, image.height, xPos, yPos, scaledWidth, scaledHeight);
+    if (fixedWidth !== 0) {
+        let scaledHeight = image.height / image.width * fixedWidth;
+        ctx.drawImage(image, 0, 0, image.width, image.height, xPos, yPos, fixedWidth, scaledHeight);
         return scaledHeight;
     }
+    if (fixedHeight !== 0) {
+        let scaledWidth = image.width / image.height * fixedHeight;
+        ctx.drawImage(image, 0, 0, image.width, image.height, xPos, yPos, scaledWidth, fixedHeight);
+        return scaledWidth;
+    }
+    console.error("Invalid arguments: fixedWidth or fixedHeight must be non-zero.");
+    return null;
 }
 
 const headerCanvas = document.getElementById("header_canvas"),
@@ -61,9 +62,6 @@ function drawHeader() {
     let lowerBound = Math.max(titleAreaRect.bottom, buttonRect.bottom);
     headerCanvas.width = getPageWidth();
     headerCanvas.height = lowerBound;
-
-    headerCtx.fillStyle = "green";
-    headerCtx.fillRect(0, 0, headerCanvas.width, headerCanvas.height);
     
     // Draw header images according to how much space there is.
     let imageGoatScaledWidth = headerImageGoat.width / headerImageGoat.height * lowerBound,
@@ -130,10 +128,40 @@ function DemoProject(name, shotCount) {
 }
 
 const demoProjects = [];
+const cardResolutionRatio = 0.5625;
+const demoCanvas = document.getElementById("demo_canvas"),
+      demoCtx = demoCanvas.getContext("2d");
 
 function drawCards(upperBound, lowerBound) {
-    let dims = [getPageWidth(), lowerBound - upperBound];
-    console.log(dims);
+    demoCanvas.width = getPageWidth();
+    demoCanvas.height = lowerBound - upperBound;
+
+    demoCtx.fillStyle = "green";
+    demoCtx.fillRect(0, 0, demoCanvas.width, demoCanvas.height);
+    
+    // Determine how many cards should be in a given row.
+    let cardCountPerRow = 0;
+    do {
+        cardCountPerRow++;
+        var cardWidth = demoCanvas.width / cardCountPerRow;
+        var cardHeight = cardWidth * cardResolutionRatio;
+    } 
+    while (cardHeight / 2 > demoCanvas.height && cardCountPerRow < demoProjects.length);
+
+    let cardCountToDraw = demoProjects.length,
+        cardDrawPosition = {x: 0, y: 0};
+    while (cardCountToDraw > 0) {
+        for (let i = 0; i < cardCountPerRow && i < cardCountToDraw; i++) {
+            drawImage(demoCtx,
+                demoProjects[i].cardImage,
+                cardDrawPosition,
+                {width: cardWidth, height: cardHeight}
+            );
+            cardDrawPosition.x += cardWidth;
+            cardCountToDraw--;
+        }
+        cardDrawPosition.y += cardHeight;
+    }
 }
 
 const footerCanvas = document.getElementById("footer_canvas"),
@@ -173,7 +201,7 @@ window.onload = function() {
 }
 
 window.onresize = function() {
-    drawHeader();
-    drawFooter();
+    headerLowerBound = drawHeader();
+    footerUpperBound = drawFooter();
     drawCards(headerLowerBound, footerUpperBound);
 }
