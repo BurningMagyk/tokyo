@@ -125,6 +125,13 @@ function DemoProject(name, shotCount) {
     for (let i = 1; i <= shotCount; i++) {
         this.cardShots.push(document.getElementById("shot_img_" + name + "_" + i));
     }
+    this.bounds = {left: 0, up: 0, right: 0, down: 0};
+    this.inbounds = function(position) {
+        return position.x > this.bounds.left
+            && position.x < this.bounds.right
+            && position.y > this.bounds.up
+            && position.y < this.bounds.down;
+    }
 }
 
 const demoProjects = [];
@@ -132,7 +139,17 @@ const cardResolutionRatio = 0.5625;
 const demoCanvas = document.getElementById("demo_canvas"),
       demoCtx = demoCanvas.getContext("2d");
 
+demoCanvas.onmousemove = function(event) {
+    var hoveredCard = null;
+    demoProjects.forEach((element) => {
+        if (element.inbounds({x: event.clientX, y: event.clientY})) {
+            hoveredCard = element;
+        }
+    });
+}
+
 function drawCards() {
+    let upperBound = demoCanvas.getBoundingClientRect().top;
     demoCanvas.width = document.documentElement.clientWidth;
     
     // Determine how many cards should be in a given row.
@@ -158,11 +175,18 @@ function drawCards() {
         cardDrawPosition = {x: 0, y: 0};
     while (cardCountToDraw > 0) {
         for (let i = 0; i < cardCountPerRow && cardCountToDraw > 0; i++) {
+            let demoArrayIndex = i + rowCountDrawn * cardCountPerRow;
             drawImage(demoCtx,
-                demoProjects[i + rowCountDrawn * cardCountPerRow].cardImage,
+                demoProjects[demoArrayIndex].cardImage,
                 cardDrawPosition,
                 {width: cardWidth, height: cardHeight}
             );
+            demoProjects[demoArrayIndex].bounds = {
+                left: cardDrawPosition.x,
+                up: cardDrawPosition.y + upperBound,
+                right: cardDrawPosition.x + cardWidth,
+                down: cardDrawPosition.y + cardHeight + upperBound,
+            }
             cardDrawPosition.x += cardWidth;
             cardCountToDraw--;
         }
@@ -187,6 +211,10 @@ function drawFooter() {
     footerCtx.fillRect(0, 0, footerCanvas.width, footerCanvas.height);
 
     return upperBound;
+}
+
+function onmousedown() {
+
 }
 
 var headerLowerBound, footerUpperBound;
