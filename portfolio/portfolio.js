@@ -132,6 +132,8 @@ function DemoProject(name, shotCount) {
             && position.y > this.bounds.up
             && position.y < this.bounds.down;
     }
+    this.canvasPos = null;
+    this.canvasDims = null;
 }
 
 const demoProjects = [];
@@ -139,13 +141,38 @@ const cardResolutionRatio = 0.5625;
 const demoCanvas = document.getElementById("demo_canvas"),
       demoCtx = demoCanvas.getContext("2d");
 
+var selectedCard = null,
+    hoveredCard = null;
+
+function hoverCard(demo) {
+    if (hoveredCard != null) {
+        // Unhighlight the formerly hovered card.
+        drawImage(demoCtx,
+            hoveredCard.cardImage,
+            hoveredCard.canvasPos,
+            hoveredCard.canvasDims
+        );
+    }
+    hoveredCard = demo;
+    // Highlight the newly hovered card.
+    drawImage(demoCtx,
+        cardHighlightImage,
+        hoveredCard.canvasPos,
+        hoveredCard.canvasDims
+    );
+}
+
 demoCanvas.onmousemove = function(event) {
-    var hoveredCard = null;
     demoProjects.forEach((element) => {
         if (element.inbounds({x: event.clientX, y: event.clientY})) {
-            hoveredCard = element;
+            hoverCard(element);
         }
     });
+}
+
+demoCanvas.onmousedown = function(event) {
+    if (hoveredCard == null) return;
+    console.log(hoveredCard.bounds);
 }
 
 function drawCards() {
@@ -156,8 +183,8 @@ function drawCards() {
     let cardCountPerRow = demoProjects.length + 1;
     do {
         cardCountPerRow--;
-        var cardWidth = demoCanvas.width / cardCountPerRow;
-        var cardHeight = cardWidth * cardResolutionRatio;
+        var cardWidth = demoCanvas.width / cardCountPerRow,
+            cardHeight = cardWidth * cardResolutionRatio;
     } 
     while (cardHeight * 3 < document.documentElement.clientHeight && cardCountPerRow > 1);
 
@@ -175,13 +202,16 @@ function drawCards() {
         cardDrawPosition = {x: 0, y: 0};
     while (cardCountToDraw > 0) {
         for (let i = 0; i < cardCountPerRow && cardCountToDraw > 0; i++) {
-            let demoArrayIndex = i + rowCountDrawn * cardCountPerRow;
+            let demo = demoProjects[i + rowCountDrawn * cardCountPerRow];
+            // Object.assign makes a copy so that we can keep mutating cardDrawPosition.
+            demo.canvasPos = Object.assign(cardDrawPosition);
+            demo.canvasDims = {width: cardWidth, height: cardHeight};
             drawImage(demoCtx,
-                demoProjects[demoArrayIndex].cardImage,
-                cardDrawPosition,
-                {width: cardWidth, height: cardHeight}
+                demo.cardImage,
+                demo.canvasPos,
+                demo.canvasDims
             );
-            demoProjects[demoArrayIndex].bounds = {
+            demo.bounds = {
                 left: cardDrawPosition.x,
                 up: cardDrawPosition.y + upperBound,
                 right: cardDrawPosition.x + cardWidth,
@@ -213,10 +243,6 @@ function drawFooter() {
     return upperBound;
 }
 
-function onmousedown() {
-
-}
-
 var headerLowerBound, footerUpperBound;
 
 window.onload = function() {
@@ -229,6 +255,7 @@ window.onload = function() {
         new DemoProject("droserogis", 2),
         new DemoProject("dauntless", 3),
     );
+    var cardHighlightImage = document.getElementById("card_img_highlight");
 
     // A scroll bug shows up if drawCards isn't called first.
     drawCards();
