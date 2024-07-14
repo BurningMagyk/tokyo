@@ -155,11 +155,11 @@ function hoverCard(demo) {
     }
     hoveredCard = demo;
     // Highlight the newly hovered card.
-    drawImage(demoCtx,
-        cardHighlightImage,
-        hoveredCard.canvasPos,
-        hoveredCard.canvasDims
-    );
+    // drawImage(demoCtx,
+    //     cardHighlightImage,
+    //     hoveredCard.canvasPos,
+    //     hoveredCard.canvasDims
+    // );
 }
 
 demoCanvas.onmousemove = function(event) {
@@ -255,7 +255,7 @@ window.onload = function() {
         new DemoProject("droserogis", 2),
         new DemoProject("dauntless", 3),
     );
-    var cardHighlightImage = document.getElementById("card_img_highlight");
+    // var cardHighlightImage = document.getElementById("card_img_highlight");
 
     // A scroll bug shows up if drawCards isn't called first.
     drawCards();
